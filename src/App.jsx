@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import Button from "./components/Button/Button";
 import JournalItem from "./components/JournalItem/JournalItem";
@@ -8,6 +8,7 @@ import Body from "./layouts/Body/Body";
 import Header from "./components/Header/Header";
 import JournalList from "./components/JournalList/JournalList";
 import JournalAddButton from "./components/JournalAddButton/JournalAddButton";
+import JournalForm from "./components/JournalForm/JournalForm";
 
 function App() {
   const data = [
@@ -22,8 +23,6 @@ function App() {
       date: new Date(),
     },
   ];
-
-  const inputChange = () => {};
 
   return (
     <div className="app">
@@ -48,7 +47,7 @@ function App() {
         </JournalList>
       </LeftPanel>
       <Body>
-        <input type="text" onChange={inputChange} />
+        <JournalForm />
       </Body>
     </div>
   );
