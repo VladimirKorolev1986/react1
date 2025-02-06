@@ -1,14 +1,30 @@
 import styles from './JournalForm.module.css';
 import Button from '../Button/Button';
-import { useState } from 'react';
+import { useEffect, useReducer } from 'react';
 import cn from 'classnames';
+import { formReducer, INITIAL_STATE } from './JournalForm.state';
+
+
 
 function JournalForm({ onSubmit }) {
-	const [formValidState, setFormValidState] = useState({
-		title: true,
-		post: true,
-		date: true
-	});
+	const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE); 
+	const { isValid } = formState;
+
+
+	useEffect(()=> {
+		let timerID;
+		if (
+			!isValid.date || !isValid.post || !isValid.title
+		) {
+			timerID = setTimeout(() => {
+				dispatchForm({type: 'RESET_VALIDITY'})
+			}, 2000)
+		}
+		return () => {
+			clearTimeout(timerID)
+		}		
+
+	}, [isValid])
 
 	const addJournalItem = (e) => {
 		e.preventDefault();
@@ -43,7 +59,7 @@ function JournalForm({ onSubmit }) {
 		<form className={styles['journal-form']} onSubmit={addJournalItem}>
 			<div>
 				<input type='text' name='title' className={cn(styles['input-title'], {
-					[styles['invalid']]: !formValidState.title
+					[styles['invalid']]: !isValid.title
 				})}/>
 			</div>
 			<div className={styles['form-row']}>
@@ -52,7 +68,7 @@ function JournalForm({ onSubmit }) {
 					<span>Дата</span>
 				</label>
 				<input type='date' name='date' id="date" className={cn(styles['input'], {
-					[styles['invalid']]: !formValidState.date
+					[styles['invalid']]: !isValid.date
 				})} />
 			</div>
 			<div className={styles['form-row']}>
@@ -64,7 +80,7 @@ function JournalForm({ onSubmit }) {
 			</div>
 			
 			<textarea name="post" id="" cols="30" rows="10" className={cn(styles['input'], {
-				[styles['invalid']]: !formValidState.post
+				[styles['invalid']]: !isValid.post
 			})}></textarea>
 			<Button text="Сохранить" />
 		</form>
